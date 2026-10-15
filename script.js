@@ -19,7 +19,7 @@ const Gameboard = () => {
 	}
 
 	const markCell = (row, col, marker) => {
-        board[row - 1][col - 1].setMarker(marker);
+        board[row][col].setMarker(marker);
 	}
 
 	const isBoardFull = () => {
@@ -102,14 +102,60 @@ const GameController = () => {
 
     const playTurn = (row, col) => {
 		board.markCell(row, col, activePlayer.marker)
-		console.log(`${getActivePlayer().marker} played at coordinate ${row}, ${col}`)
+		// console.log(`${getActivePlayer().marker} played at coordinate ${row + 1}, ${col + 1}`)
 		switchActivePlayer();
-        board.printBoard();
+        // board.printBoard();
 	};
 
-	const getWinner = () => board.getWinner(); 
-
-	return { playTurn, getWinner };
+	return { playTurn, getActivePlayer,
+		getBoard: board.getBoard,
+		getWinner: board.getWinner,
+	};
 };
 
-const game = GameController();
+const ScreenController = (() => {
+	const game = GameController();
+	const playerTurnDiv = document.querySelector(".player-turn");
+	const boardDiv = document.querySelector(".board");
+
+	const updateScreen = () => {
+		const activePlayer = game.getActivePlayer();
+		playerTurnDiv.textContent = `${activePlayer.marker}'s turn`;
+
+		const board = game.getBoard();
+		boardDiv.textContent = "";
+		board.forEach((row, rowIndex) => {
+			row.forEach((cell, colIndex) => {
+				const cellButton = document.createElement("button");
+				const cellMarker = cell.getMarker();
+				cellButton.dataset.row = rowIndex;
+				cellButton.dataset.col = colIndex;
+				cellButton.dataset.marker = cellMarker;
+				boardDiv.appendChild(cellButton);
+			});
+		});
+
+		const winner = game.getWinner();
+		if(winner !== null) {
+			let gameOverMessage = "";
+			if(winner == "Tie") { gameOverMessage = "It's a tie!"}
+			else { gameOverMessage = `${winner} wins!` }
+			playerTurnDiv.textContent = gameOverMessage;
+		} 
+	}
+
+	boardDiv.addEventListener("click", function boardClickHandler(e) {
+		const clickedCell = e.target;
+		const clickedCellRow = clickedCell.dataset.row;
+		const clickedCellColumn = clickedCell.dataset.col;
+		if(!clickedCellColumn || !clickedCellRow) return;
+
+		if(clickedCell.dataset.marker === "" && game.getWinner() === null) {
+			game.playTurn(Number(clickedCellRow), Number(clickedCellColumn));			
+		} else return;
+
+		updateScreen();
+	});
+	
+	updateScreen();
+})();
