@@ -13,10 +13,28 @@
 <body>
     <div class="layout">
         <h1>Tic Tac Toe</h1>
-        <p class="player-turn"></p>
+        <!-- Game -->
+        <div class="boardtop">
+            <p class="player-turn"></p>
+            <button class="reset">Reset</button>
+        </div>
         <div class="board-container">
             <div class="board"></div>
         </div>
+        
+        <!-- Pregame -->
+        <h2 class="player-names">Input player names</h2>
+        <form action="#" method="get" id="player-names">
+            <div class="form-control">
+                <input type="text" name="playerX" id="playerX" required>
+                <label for="playerX" class="label">plays as X</label>
+            </div>
+            <div class="form-control">
+                <input type="text" name="playerO" id="playerO" required>
+                <label for="playerO" class="label">plays as O</label>
+            </div>
+            <button class="play">Play</button>
+        </form>
     </div>
 </body>
 </html>

@@ -28,9 +28,10 @@ const Gameboard = () => {
 		return boardRowsWithEmptyMarkers.length === 0;
 	}
 
-	let winner = null;
-	let winningLine = [];
 	const getWinner = () => {
+		let winner = null;
+		let winningLine = [];
+
 		function isSameLine(line) {
 			return line.every ( cell => {
 				return cell.getMarker() === line[0].getMarker() &&
@@ -73,7 +74,15 @@ const Gameboard = () => {
 		return winner;
 	}
 
-	return { getBoard, printBoard, markCell, getWinner };
+	const reset = () => {
+		board.forEach(row => {
+			row.forEach(cell => {
+				cell.setMarker("");
+			});
+		});
+	}
+
+	return { getBoard, printBoard, markCell, getWinner, reset };
 }
 
 const Cell = () => {
@@ -107,20 +116,54 @@ const GameController = () => {
         // board.printBoard();
 	};
 
+	const setPlayerNames = (p1, p2) => {
+		players[0].name = p1;
+		players[1].name = p2;
+	}
+
+	const getWinner = () => {
+		let winner = board.getWinner();
+		for(const player of players) {
+			if(winner === player.marker) winner = player;
+		}
+
+		return winner;
+	}
+
 	return { playTurn, getActivePlayer,
 		getBoard: board.getBoard,
-		getWinner: board.getWinner,
+		getWinner,
+		setPlayerNames,
+		resetBoard: board.reset,
 	};
 };
 
 const ScreenController = (() => {
 	const game = GameController();
+	const boardTopDiv = document.querySelector(".boardtop");
 	const playerTurnDiv = document.querySelector(".player-turn");
+	const resetButton = document.querySelector(".reset") 
+	const boardContainerDiv = document.querySelector(".board-container");
 	const boardDiv = document.querySelector(".board");
 
+	const playerNamesH2 = document.querySelector("h2.player-names");
+	const playerNamesForm = document.querySelector("#player-names");
+	let isPregameScreen = true;
+
 	const updateScreen = () => {
+		if(isPregameScreen) {
+			boardTopDiv.style.display = "none";
+			boardContainerDiv.style.display = "none";
+			return;
+		} else {
+			boardTopDiv.style.display = "flex";
+			boardContainerDiv.style.display = "flex";
+			playerNamesH2.style.display = "none";
+			playerNamesForm.style.display = "none";
+		}
+
 		const activePlayer = game.getActivePlayer();
-		playerTurnDiv.textContent = `${activePlayer.marker}'s turn`;
+		playerTurnDiv.textContent = `${activePlayer.name}'s turn`;
 
 		const board = game.getBoard();
 		boardDiv.textContent = "";
@@ -139,9 +182,8 @@ const ScreenController = (() => {
 		if(winner !== null) {
 			let gameOverMessage = "";
 			if(winner == "Tie") { gameOverMessage = "It's a tie!"}
-			else { gameOverMessage = `${winner} wins!` }
-			playerTurnDiv.textContent = gameOverMessage;
-		} 
+			else { gameOverMessage = `${winner.name} wins!` }
+			playerTurnDiv.textContent = gameOverMessage;		} 
 	}
 
 	boardDiv.addEventListener("click", function boardClickHandler(e) {
@@ -154,6 +196,23 @@ const ScreenController = (() => {
 			game.playTurn(Number(clickedCellRow), Number(clickedCellColumn));			
 		} else return;
 
+		updateScreen();
+	});
+
+	playerNamesForm.addEventListener("submit", function playButtonSubmitHandler(e) {
+		const formElement = e.target;
+		const formData = new FormData(formElement);
+		const [ player1Name, player2Name ] = formData.values(); 
+
+		e.preventDefault();
+		isPregameScreen = false;
+		game.setPlayerNames(player1Name, player2Name);
+
+		updateScreen();
+	});
+
+	resetButton.addEventListener("click", function resetGameHandler() {
+		game.resetBoard();
 		updateScreen();
 	});
 	

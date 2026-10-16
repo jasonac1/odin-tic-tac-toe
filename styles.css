@@ -16,6 +16,13 @@ input, button, textarea, select {
     padding: 0;
 }
 
+/* project properties */
+:root {
+    --primary-300-color: #3241ff;
+    --error-300-color: #f44336;
+    --neutral-300-color: #607d8b;
+}
+
 body {
     font-family: "Roboto", sans-serif;
     height: 100vh; 
@@ -31,6 +38,7 @@ body {
     > * {
         display: flex;
         justify-content: center;
+        align-items: center;
         /* outline: auto; */
     }
 }
@@ -43,26 +51,79 @@ p {
     font-size: 2rem;
 }
 
+button {
+    border: none;
+    color: white;
+    font-weight: bold;
+}
+
+.boardtop {
+    flex-direction: column;
+    gap: 1rem;
+    width: 40%;
+    justify-self: center;
+
+    button {
+        background-color: var(--error-300-color);
+
+        font-size: 1.5rem;
+        height: 3rem;
+        width: 8rem;
+    }
+}
+
 .board {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     grid-template-rows: 1fr 1fr 1fr;
+    width: 30%;
+    height: auto;
     aspect-ratio: 1/1;
+    
+    button {
+        background-color: white;
+        background-position: center;
+        background-size: 80%;
+
+        &[data-marker="X"] {
+            background-image: url("data:image/svg+xml, %3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20xml%3Aspace%3D%22preserve%22%20viewBox%3D%220%200%20512%20512%22%3E%3Cpath%20d%3D%22M503.67%20463.44%2048.56%208.33C37.45-2.78%2019.44-2.78%208.33%208.33s-11.11%2029.12%200%2040.23l455.11%20455.11c11.11%2011.11%2029.12%2011.11%2040.23%200s11.11-29.12%200-40.23M463.44%208.33%208.33%20463.44c-11.11%2011.11-11.11%2029.12%200%2040.23s29.12%2011.11%2040.23%200L503.67%2048.56c11.11-11.11%2011.11-29.12%200-40.23s-29.12-11.11-40.23%200%22%20fill%3D%22%23f44336%22%2F%3E%3C%2Fsvg%3E");
+            background-repeat: no-repeat;
+        }
+    
+        &[data-marker="O"] {
+            background-image: url("data:image/svg+xml, %3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20xml%3Aspace%3D%22preserve%22%20viewBox%3D%220%200%20512%20512%22%3E%3Cpath%20d%3D%22M256%200C114.8%200%200%20114.8%200%20256s114.8%20256%20256%20256%20256-114.8%20256-256S397.2%200%20256%200m0%2042.7c118.1%200%20213.3%2095.3%20213.3%20213.3S374.1%20469.3%20256%20469.3%2042.7%20374.1%2042.7%20256%20137.9%2042.7%20256%2042.7%22%20fill%3D%22%233241ff%22%2F%3E%3C%2Fsvg%3E");
+            background-repeat: no-repeat;
+        }
+        
+        border: 1px solid black;
+        font-size: 4rem;
+    }
 }
 
-button {
-    background-color: white;
 
-    &[data-marker="X"] {
-        background-image: url("data:image/svg+xml, %3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20xml%3Aspace%3D%22preserve%22%20viewBox%3D%220%200%20512%20512%22%3E%3Cpath%20d%3D%22M503.67%20463.44%2048.56%208.33C37.45-2.78%2019.44-2.78%208.33%208.33s-11.11%2029.12%200%2040.23l455.11%20455.11c11.11%2011.11%2029.12%2011.11%2040.23%200s11.11-29.12%200-40.23M463.44%208.33%208.33%20463.44c-11.11%2011.11-11.11%2029.12%200%2040.23s29.12%2011.11%2040.23%200L503.67%2048.56c11.11-11.11%2011.11-29.12%200-40.23s-29.12-11.11-40.23%200%22%20fill%3D%22%23f44336%22%2F%3E%3C%2Fsvg%3E");
-        background-repeat: no-repeat;
+
+h2 {
+    font-size: 2rem;
+}
+
+#player-names {
+    display: grid;
+    gap: 1rem;
+
+    font-size: 2rem;
+
+    input {
+        height: 4rem;
+        text-indent: 1rem;
     }
 
-    &[data-marker="O"] {
-        background-image: url("data:image/svg+xml, %3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20xml%3Aspace%3D%22preserve%22%20viewBox%3D%220%200%20512%20512%22%3E%3Cpath%20d%3D%22M256%200C114.8%200%200%20114.8%200%20256s114.8%20256%20256%20256%20256-114.8%20256-256S397.2%200%20256%200m0%2042.7c118.1%200%20213.3%2095.3%20213.3%20213.3S374.1%20469.3%20256%20469.3%2042.7%20374.1%2042.7%20256%20137.9%2042.7%20256%2042.7%22%20fill%3D%22%233241ff%22%2F%3E%3C%2Fsvg%3E");
-        background-repeat: no-repeat;
+    label {
+        margin-left: 0.5rem;    
     }
-    
-    border: 1px solid black;
-    font-size: 4rem;
+
+    button {
+        background-color: var(--primary-300-color);
+        height: 8rem;
+        width: 100%;
+    }
 }
